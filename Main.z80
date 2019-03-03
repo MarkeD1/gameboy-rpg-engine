@@ -9502,7 +9502,7 @@ MAP6_EVENT3_END:
 	call DELAY
 	
 	ld c,88
-.loop:					
+.loop:							;moves the legs off screen
 	add a, 2					
 	ld [$FE0D], a				;move the sprite by 2 pixels
 	ld b, 2
@@ -9534,7 +9534,7 @@ MAP6_EVENT3_END:
 	call PORTRAIT_MESSAGE_OUTPUT	;output "Now this world will disappear"
 	call WAIT_FOR_A_OR_B
 	
-	call gbt_stop	;play ending song here instead
+	call gbt_stop					;stops the music
 	
 	ld a, [rLCDC]
 	res 5, a
@@ -9653,23 +9653,23 @@ MAP6_EVENT3_END:
 	ld [hl+], a
 	
 	xor a
-	ld [hl+], a
+	ld [hl+], a								;xor a so that the byte containing palette no is cleared
 	
 	ld b, 20
 	call DELAY
 	
 	inc de
 	ld a, [de]
-	cp $80
-	jr nz, .loop3
+	cp $80									;if the next character to output is the null terminator
+	jr nz, .loop3							;then jump to .loop3
 	
 	ld b, 240
-	call DELAY
+	call DELAY								;wait 4 seconds
 	
-	call FADE_SPRITES_WHITE
+	call FADE_SPRITES_WHITE					;fade the message to white
 	ld b, 240
-	call DELAY
-	jp Start
+	call DELAY								;wait 4 seconds again
+	jp Start								;jump to Start to reset the program
 	
 ;****************************************************************************************************************************************************
 ;*	RAM Variables
