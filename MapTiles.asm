@@ -169,4 +169,6 @@ DB $FF,$FF,$81,$FF,$E7,$E7,$FF,$FF
 DB $81,$E7,$81,$FF,$81,$FF,$FF,$FF
 DB $FF,$FF,$81,$FF,$81,$FF,$FF,$FF
 DB $81,$FF,$81,$FF,$81,$FF,$FF,$FF
+DB $FF,$00,$FF,$7E,$81,$FF,$A1,$FF
+DB $85,$FF,$81,$FF,$FF,$7E,$FF,$42
 	

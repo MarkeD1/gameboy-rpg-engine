@@ -1,14 +1,14 @@
 ROM Bank #0 (HOME):
-  SECTION: $3B37-$3C36 ($0100 bytes) ["UncrossableTiles"]
-           $3B37 = UncrossableTiles
-  SECTION: $3950-$3B36 ($01E7 bytes) ["GBT_BANK0"]
-           $3950 = gbt_get_pattern_ptr
-           $3A2B = gbt_stop
-           $3972 = gbt_play
-           $3A27 = gbt_loop
-           $3A3A = gbt_update
-           $3A1E = gbt_pause
-           $3A36 = gbt_enable_channels
+  SECTION: $3BFC-$3CFB ($0100 bytes) ["UncrossableTiles"]
+           $3BFC = UncrossableTiles
+  SECTION: $3A15-$3BFB ($01E7 bytes) ["GBT_BANK0"]
+           $3A15 = gbt_get_pattern_ptr
+           $3AF0 = gbt_stop
+           $3A37 = gbt_play
+           $3AEC = gbt_loop
+           $3AFF = gbt_update
+           $3AE3 = gbt_pause
+           $3AFB = gbt_enable_channels
   SECTION: $0000-$0002 ($0003 bytes) ["Org $00"]
   SECTION: $0008-$000A ($0003 bytes) ["Org $08"]
   SECTION: $0010-$0012 ($0003 bytes) ["Org $10"]
@@ -26,7 +26,7 @@ ROM Bank #0 (HOME):
   SECTION: $0150-$0215 ($00C6 bytes) ["Program Start"]
            $0150 = Start
            $01F9 = Main
-  SECTION: $0216-$394F ($373A bytes) ["Support Routines"]
+  SECTION: $0216-$3A14 ($37FF bytes) ["Support Routines"]
            $1BC2 = USE_POTION
            $19CD = USE_RETURN
            $19D8 = USE_ATK_EQUIP
@@ -65,8 +65,9 @@ ROM Bank #0 (HOME):
            $358F = MAP5_EVENT2
            $35D0 = MAP5_EVENT3
            $3638 = MAP5_EVENT7
-           $3681 = MAP6_EVENT1
-           $36B8 = MAP6_EVENT3
+           $3681 = MAP5_EVENT9
+           $3746 = MAP6_EVENT1
+           $377D = MAP6_EVENT3
            $11CE = NEW_gbt_update
            $0216 = RAM_CLEAR
            $0225 = OAM_CLEAR
@@ -186,9 +187,9 @@ ROM Bank #0 (HOME):
            $32F0 = MAP3_EVENT5_BUY
            $3324 = ITEMSHOP_LOOP
            $329F = MAP3_EVENT5_BUY_TALK_LOOP_INIT
-           $37AD = MAP6_EVENT3_EXIT
-           $379F = MAP6_EVENT3_RUN
-           $3785 = MAP6_EVENT3_COMBAT
+           $3872 = MAP6_EVENT3_EXIT
+           $3864 = MAP6_EVENT3_RUN
+           $384A = MAP6_EVENT3_COMBAT
            $2C65 = FADE_BACKGROUND_BLACK
            $2C7B = SLOW_FADE_BACKGROUND_WHITE
            $148C = MENU_ITEMS_USE
@@ -199,7 +200,7 @@ ROM Bank #0 (HOME):
            $0591 = MAP32_UPDATE
            $2DB5 = TITLESCREEN_NEW_DEL
            $0E9E = MAIN_EVENT_RUN
-    SLACK: $04A9 bytes
+    SLACK: $03E4 bytes
 
 ROM Bank #1:
   SECTION: $4000-$4000 ($0001 bytes) ["Bank 1, Maps"]
@@ -209,23 +210,23 @@ ROM Bank #1:
 
 ROM Bank #2:
   SECTION: $4000-$4000 ($0001 bytes) ["Bank 2, Maps2"]
-  SECTION: $60D8-$68E2 ($080B bytes) ["Titlescreen"]
-           $60D8 = TitleScreen
+  SECTION: $60EA-$68F4 ($080B bytes) ["Titlescreen"]
+           $60EA = TitleScreen
   SECTION: $4001-$5079 ($1079 bytes) ["Maps 2&3"]
            $4001 = Map2
            $4842 = Map3
-  SECTION: $507A-$60D7 ($105E bytes) ["Maps 5&6"]
+  SECTION: $507A-$60E9 ($1070 bytes) ["Maps 5&6"]
            $507A = Map5
-           $58BB = Map6
-    SLACK: $171D bytes
+           $58CD = Map6
+    SLACK: $170B bytes
 
 ROM Bank #3:
   SECTION: $4000-$4000 ($0001 bytes) ["Bank 3, Tilesets"]
-  SECTION: $4F99-$54D8 ($0540 bytes) ["Tiles"]
+  SECTION: $4F99-$54E8 ($0550 bytes) ["Tiles"]
            $4F99 = maptiles
-  SECTION: $54D9-$5558 ($0080 bytes) ["Character"]
-           $54D9 = Character
-           $5539 = Chest
+  SECTION: $54E9-$5568 ($0080 bytes) ["Character"]
+           $54E9 = Character
+           $5549 = Chest
   SECTION: $4001-$4F98 ($0F98 bytes) ["WindowData"]
            $46A1 = WindowTiles
            $4461 = Portrait1
@@ -240,7 +241,7 @@ ROM Bank #3:
            $4E31 = ItemShop
            $4581 = Boss2Portrait
            $4611 = Boss3Portrait
-    SLACK: $2AA7 bytes
+    SLACK: $2A97 bytes
 
 ROM Bank #4:
   SECTION: $4000-$4000 ($0001 bytes) ["Bank 4, Sound"]
@@ -309,7 +310,7 @@ ROM Bank #4:
 
 ROM Bank #5:
   SECTION: $4000-$4000 ($0001 bytes) ["Bank 5, Strings"]
-  SECTION: $4001-$461B ($061B bytes) ["Strings"]
+  SECTION: $4001-$4638 ($0638 bytes) ["Strings"]
            $4038 = SaveMessage
            $4026 = YouEquipped
            $4001 = YouUsed
@@ -367,15 +368,17 @@ ROM Bank #5:
            $44E6 = TreeNoises
            $44FD = OpenChest
            $4510 = YouGotSwordPlus
+           $45BE = TheCreature
+           $45F7 = WillYouGive
+           $462B = ItThanksYou
+           $45E0 = ButYouHave
            $4523 = OpenTheChest
            $4544 = ThenPerish
            $4561 = Fool
            $4583 = YouHaveBested
            $4595 = ThisWorld
            $45B4 = ThankYou
-           $45E2 = WindowMessage2
-           $45BE = WindowMessage
-    SLACK: $39E4 bytes
+    SLACK: $39C7 bytes
 
 ROM Bank #6:
   SECTION: $4000-$4000 ($0001 bytes) ["Bank 6, Combat"]

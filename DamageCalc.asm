@@ -9,46 +9,46 @@ DamageCalc: MACRO
 	ld hl, 0
 	push de
 	ld d, 0
-	ld e, b
-	ld l, c
-	add hl, de
+	ld e, b		;de = move damage
+	ld l, c		;hl = player attack
+	add hl, de	;hl = player attack + move damage
 	pop de
 	
 	ld a, h
-	or a
-	jr z, DamageCalc_NO_OVERFLOW
+	or a						;if h = 0, then l did not overflow
+	jr z, DamageCalc_NO_OVERFLOW;so jump to DamageCalc_NO_OVERFLOW
 	
-	ld hl, 255
+	ld hl, 255					;else, set l to the max value
 	
 DamageCalc_NO_OVERFLOW:
 	ld a, l
 	ld b, d
 	ld c, 0
-	call DIVIDE
-	ld a, c
+	call DIVIDE					
+	ld a, c						;a = hl/de = (player attack + move damage)/enemy defence
 	ENDM
 	
 EnemyDamageCalc: MACRO
 	ld hl, 0
 	push de
 	ld d, 0
-	ld e, b
-	ld l, c
-	add hl, de
+	ld e, b		;de = move damage
+	ld l, c		;hl = player attack
+	add hl, de	;hl = player attack + move damage
 	pop de
 	
 	ld a, h
-	or a
-	jr z, EnemyDamageCalc_NO_OVERFLOW
+	or a							 ;if h = 0, then l did not overflow
+	jr z, EnemyDamageCalc_NO_OVERFLOW;so jump to DamageCalc_NO_OVERFLOW
 	
-	ld hl, 255
+	ld hl, 255						 ;else, set l to the max value
 	
 EnemyDamageCalc_NO_OVERFLOW:
 	ld a, l
 	ld b, d
 	ld c, 0
 	call DIVIDE
-	ld a, c
-	
-	
+	ld a, c							  ;a = hl/de = (player attack + move damage)/enemy defence
 	ENDM
+	
+	

@@ -342,7 +342,7 @@ Start::
 	ldh [rOBP0], a
 	
 	ld hl, maptiles
-	ld bc, 84*16
+	ld bc, 85*16
 	ld de, $9010
 	call LOAD_TILES			;loads the background tiles
 	
@@ -8072,32 +8072,6 @@ TITLESCREEN_NEW_DEL_NEW:
 	ld [MAP_Y], a
 	ld hl, Map1								;set the pointer to the new map
 	
-	;ld a, BANK_MAP3
-	;ld [$2000], a							;set the bank containing the map
-	;ld [CURR_MAP_BANK], a
-	;ld a, 2
-	;ld [MAP_X], a
-	;ld a, 61						;set our coords on the new map
-	;ld [MAP_Y], a
-	;ld hl, Map4								;set the pointer to the new map
-	
-	;ld a, BANK_MAP2
-	;ld [$2000], a							;set the bank containing the map
-	;ld [CURR_MAP_BANK], a
-	;ld a, 7
-	;ld [MAP_X], a
-	;ld a, 14								;set our coords on the new map
-	;ld [MAP_Y], a
-	;ld hl, Map6								;set the pointer to the new map
-	
-	;ld a, BANK_MAP2
-	;ld [$2000], a							;set the bank containing the map
-	;ld [CURR_MAP_BANK], a
-	;ld a, 16-PLAYER_X
-	;ld [MAP_X], a
-	;ld a, 20-PLAYER_Y						;set our coords on the new map
-	;ld [MAP_Y], a
-	;ld hl, Map2								;set the pointer to the new map
 	call MAP_INITIALISE
 	add sp, 2								;as the old map is in a different bank, ret will return to the same location in the new bank
 											;so we need to increment the sp by 2 to skip over the return address
@@ -8364,21 +8338,7 @@ MAP1_EVENT6::
 	ret
 
 MAP1_EVENT7::
-	COMBAT_TILE_1					;test COMBAT_INIT_BYTE so that this function can only run once per tile				
-	; ld hl, NEW_TILES				;NEW_TILES is reused to save memory
-	; ld a, 1							;3 enemy numbers and levels are stored in NEW_TILES
-	; ld [hl+], a
-	; ld a, 2
-	; ld [hl+], a
-	; ld a, 1
-	; ld [hl+], a
-	; ld a, 2
-	; ld [hl+], a
-	; ld a, 1
-	; ld [hl+], a
-	; ld a, 2
-	; ld [hl+], a
-	; COMBAT_INIT_ENEMY_PICK
+	COMBAT_TILE_1				;test COMBAT_INIT_BYTE so that this function can only run once per tile
 	ld a, 01					;set the enemy to be Crab
 	ld [ENEMY_NO], a
 	ld a, 02					;and set their level to 2
@@ -9229,6 +9189,127 @@ MAP5_EVENT7::
 	ld [$C001], a							;set bit 1 of $C001 so that the player can't open the chest again
 	
 	ld a, [CURR_MAP_BANK]
+	ld [$2000], a
+	ret
+	
+MAP5_EVENT9::
+	ld a, [PLAYER_DIR]
+	cp PLAYER_UP							;if the player is not facing up
+	ret nz									;then return
+
+	ld a, [joypad_pressed]
+	bit 0, a								;if the player is not pressing A
+	ret z									;then return
+	
+	ld a, BANK_STRING						;set the current bank to bank 5 so that we can get message data
+	ld [$2000], a
+	
+	ld de, TheCreature
+	ld b, DEFAULT_TEXT_SPEED
+	call MESSAGE_OUTPUT						;outputs "The creature asks for a potion"
+	call WAIT_FOR_A_OR_B
+
+	
+	ld hl, INVENTORY
+	ld c, 255
+.loop:										;this loop checks if the player has any potions in their inventory
+	ld a, [hl+]
+	or a
+	jr z, .loop_escape						;if [hl] = 0, then we are at the end of the inventory, so the player doesn't have a potion
+	cp 1
+	jr z, .loop_escape						;potions are item code 1, so if [hl] = 1, then the player has a potion so jump to .loop_escape
+	
+	dec c
+	inc hl
+	jr nz, .loop
+	
+.loop_escape:
+
+	cp 1									;if the player doesn't have a potion
+	jr nz, NoPotion							;then jump to NoPotion
+	
+	ld de, WillYouGive
+	ld b, DEFAULT_TEXT_SPEED
+	call MESSAGE_OUTPUT						;outputs "Will you give it one? Yes	No"
+	
+	ld a, 32
+	ld [CURSOR_X], a						;move the cursor so that it is next to "Yes"
+	ld a, 144
+	ld [CURSOR_Y], a
+	
+INPUT_LOOP:
+	halt
+	call READ_JOYPAD
+	ld a, [joypad_pressed]
+	bit 0, a						;if a is being pressed
+	jr nz, INPUT_LOOP_ESCAPE		;then jump to INPUT_LOOP_ESCAPE
+	bit 5, a						;if left is being pressed
+	jr nz, INPUT_LOOP_LEFT			;then jump to INPUT_LOOP_LEFT
+	bit 4, a						;if right is being pressed
+	jr nz, INPUT_LOOP_RIGHT			;then jump to INPUT_LOOP_RIGHT
+	jr INPUT_LOOP
+	
+INPUT_LOOP_LEFT:
+	ld a, [CURSOR_X]
+	cp 32							;if the cursor points to yes
+	jr z, INPUT_LOOP				;then jump to INPUT_LOOP
+	
+	ld a, 32
+	ld [CURSOR_X], a				;else, move the cursor to yes
+	jr INPUT_LOOP
+	
+INPUT_LOOP_RIGHT:
+	ld a, [CURSOR_X]
+	cp 112							;if the cursor points to no
+	jr z, INPUT_LOOP				;then jump to INPUT_LOOP
+	
+	ld a, 112
+	ld [CURSOR_X], a				;else, move the cursor to no
+	jr INPUT_LOOP
+	
+	
+INPUT_LOOP_ESCAPE:
+	ld a, [CURSOR_X]
+	cp 32
+	jr nz, MAP5_EVENT9_END			;if the player selected no, then jump to MAP5_EVENT9_END
+	
+	xor a
+	ld [CURSOR_X], a
+	ld [CURSOR_Y], a				;move the cursor to 0,0 so that it can't be seen
+	
+	ld a, 1
+	call INVENTORY_REMOVE			;remove a potion from the inventory
+	
+	ld de, ItThanksYou
+	ld b, DEFAULT_TEXT_SPEED
+	call MESSAGE_OUTPUT						;outputs "It thanks you"
+	call WAIT_FOR_A_OR_B
+	jr MAP5_EVENT9_END
+	
+NoPotion:
+	ld de, ButYouHave
+	ld b, DEFAULT_TEXT_SPEED
+	call MESSAGE_OUTPUT						;outputs "But you have none left"
+	call WAIT_FOR_A_OR_B
+	
+MAP5_EVENT9_END:
+	xor a
+	ld [CURSOR_X], a
+	ld [CURSOR_Y], a						;move the cursor to 0,0 so that it can't be seen
+
+	ld a, [rLCDC]
+	res 5, a
+	ld [rLCDC], a							;turns the window off
+	
+	ld a, BANK_TILESET						;sets the current bank to bank 3
+	ld [$2000], a
+	
+	ld de, _SCRN1
+	ld hl, PortraitWindowFrame
+	ld bc, 20*5
+	call ACTIVE_FRAME_LOAD					;loads the portrait frame into the window
+
+	ld a, [CURR_MAP_BANK]					;set the bank back to what it was before the event
 	ld [$2000], a
 	ret
 	
